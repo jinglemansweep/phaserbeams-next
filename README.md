@@ -1,34 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# PhaserBeams (Next)
 
-## Getting Started
+This is an experiment in combining various technologies together in the effort to make a simple novel online multiplayer game. The various components of the project are as follows:
 
-First, run the development server:
+- [Next.js](https://nextjs.org/) web application
+  - Multi-user frontend user interface
+  - Modern React based framework
+  - Easily hostable at [Vercel](https://vercel.com/)
+- [Supabase](https://supabase.com/) PaaS
+  - Authorisation (GitHub)
+  - Database
+  - Realtime event subscriptions
+- [WLED](https://kno.wled.ge/) LED Controller
+  - Separate controller service
+  - Polls Supabase subscriptions
+  - Updates LED strips using WLED [realtime UDP protocol](https://kno.wled.ge/interfaces/udp-realtime/)
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Game Concepts
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The games must be extremely simple as they must be rendered on a 1-dimensional LED strip.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Initial work will be implementing the required multiplayer environment and realtime subscription updates to the LED strip.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Usage
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+The experiment is currently deployed at: [https://phaserbeams-next.vercel.app/](https://phaserbeams-next.vercel.app/)
 
-## Learn More
+Click _Login with GitHub_ and login using your GitHub identity.
 
-To learn more about Next.js, take a look at the following resources:
+## Development
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To develop and run the Next.js development server:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+    npm install
+    npm run dev
 
-## Deploy on Vercel
+To start the LED controller service:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+    node wled.js
