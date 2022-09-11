@@ -1,26 +1,10 @@
 import React from "react";
 import { useState } from "react";
-import { supabase, getCurrentUser } from "../utils/supabase";
+import { supabase, getUser, loginUser } from "../utils/supabase";
 import styles from "../styles/Home.module.css";
 
 export default function Auth() {
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
-
-  const handleLogin = async () => {
-    try {
-      setLoading(true);
-      const { error } = await supabase.auth.signIn({ provider: "github" });
-      if (error) throw error;
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className={styles.container}>
       <main className={styles.main}>
@@ -29,7 +13,7 @@ export default function Auth() {
           <button
             onClick={(e) => {
               e.preventDefault();
-              handleLogin();
+              loginUser(setLoading);
             }}
             className="button block"
             disabled={loading}

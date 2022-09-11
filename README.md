@@ -21,6 +21,16 @@ The games must be extremely simple as they must be rendered on a 1-dimensional L
 
 Initial work will be implementing the required multiplayer environment and realtime subscription updates to the LED strip.
 
+## Examples / Screenshots
+
+Prototype web interface
+
+![Prototype web interface](./docs/images/page-main.png)
+
+WLED realtime subscriber service
+
+![WLED realtime subscriber service](./docs/images/wled-console.png)
+
 ## Usage
 
 The experiment is currently deployed at: [https://phaserbeams-next.vercel.app/](https://phaserbeams-next.vercel.app/)
