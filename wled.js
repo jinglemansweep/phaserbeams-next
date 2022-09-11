@@ -5,7 +5,6 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const client = supabase.createClient(supabaseUrl, supabaseAnonKey);
-console.log(client);
 
 const updates = client
   .from("profiles")
@@ -13,6 +12,6 @@ const updates = client
     const {
       new: { id, coord_x },
     } = payload;
-    console.log("Change received!", id, coord_x);
+    console.log("Update", { user: id, x: coord_x });
   })
   .subscribe();

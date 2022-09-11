@@ -1,27 +1,66 @@
-import React, { useState, useEffect } from "react";
-import { useKeyPress } from "@react-typed-hooks/use-key-press";
+import React, { useCallback, useState, useEffect } from "react";
+import debounce from "lodash.debounce";
 import Account from "./Account";
 import Toolbar from "./Toolbar";
 import { supabase, getCurrentUser } from "../utils/supabase";
 import { Session } from "@supabase/gotrue-js";
+
 import styles from "../styles/Home.module.css";
 
-export default function GameScene({ session }: { session: Session }) {
-  const keyLeft = useKeyPress({ targetKey: "o" });
-  const keyRight = useKeyPress({ targetKey: "p" });
-  const keyUp = useKeyPress({ targetKey: "q" });
-  const keyDown = useKeyPress({ targetKey: "a" });
-  const keyAction = useKeyPress({ targetKey: "m" });
+const KEY_LEFT = "o";
+const KEY_RIGHT = "p";
 
-  async function setCoordX(x: number) {
+export default function GameScene({ session }: { session: Session }) {
+  const [posX, setPosX] = useState<number>(0);
+
+  useEffect(() => {
+    getState();
+  }, []);
+
+  const handleKeypress = (e: KeyboardEvent) => {
+    let x = posX;
+    if (e.key === KEY_LEFT) {
+      if (x > 0) x--;
+    }
+    if (e.key === KEY_RIGHT) {
+      if (x < 500) x++;
+    }
+    setPosX(x);
+    updateRemoteStateDebounced({ coord_x: x });
+  };
+
+  useEffect(() => {
+    window.addEventListener("keypress", handleKeypress);
+    return () => window.removeEventListener("keypress", handleKeypress);
+  });
+
+  const getState = async () => {
     try {
-      //setLoading(true);
       const user = await getCurrentUser();
-      console.log(user);
+      let { data, error, status } = await supabase
+        .from("profiles")
+        .select(`*`)
+        .eq("id", user.id)
+        .single();
+      if (error && status !== 406) {
+        throw error;
+      }
+      setPosX(data.coord_x);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      }
+    }
+  };
+
+  const updateRemoteState = async (state: Record<string, unknown>) => {
+    console.log("publish", state);
+    try {
+      const user = await getCurrentUser();
       const updates = {
         id: user.id,
-        coord_x: x,
         updated_at: new Date(),
+        ...state,
       };
       let { error } = await supabase
         .from("profiles")
@@ -34,28 +73,18 @@ export default function GameScene({ session }: { session: Session }) {
       if (error instanceof Error) {
         alert(error.message);
       }
-    } finally {
-      //setLoading(false);
     }
-  }
+  };
+  const updateRemoteStateDebounced = debounce(updateRemoteState, 200);
 
   return (
     <div className={styles.container}>
       <main className={styles.main}>
         <h1 className={styles.title}>Game</h1>
-        <div className={styles.fieldrow}>
-          <p onClick={() => setCoordX(Math.floor(Math.random() * 100))}>GAME</p>
-        </div>
-        <p>
-          Keys:
-          {keyLeft && "L"}
-          {keyRight && "R"}
-          {keyUp && "U"}
-          {keyDown && "D"}
-          {keyAction && "A"}
-        </p>
         <Toolbar session={session} />
-        <Account session={session} />
+        <div className={styles.fieldrow}>
+          <p>X: {posX}</p>
+        </div>
       </main>
     </div>
   );

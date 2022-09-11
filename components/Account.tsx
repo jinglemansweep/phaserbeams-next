@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { supabase, getCurrentUser } from "../utils/supabase";
 import { Session } from "@supabase/gotrue-js";
 import styles from "../styles/Home.module.css";
-import Image from "next/image";
 
 export default function Account({ session }: { session: Session }) {
   const [loading, setLoading] = useState(true);
@@ -13,7 +12,7 @@ export default function Account({ session }: { session: Session }) {
     getProfile();
   }, []);
 
-  async function getProfile() {
+  const getProfile = async () => {
     try {
       setLoading(true);
       const user = await getCurrentUser();
@@ -36,9 +35,12 @@ export default function Account({ session }: { session: Session }) {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  async function updateProfile({ username, coordX }: Record<string, unknown>) {
+  const updateProfile = async ({
+    username,
+    coordX,
+  }: Record<string, unknown>) => {
     try {
       setLoading(true);
       const user = await getCurrentUser();
@@ -59,7 +61,7 @@ export default function Account({ session }: { session: Session }) {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className={styles.container}>
