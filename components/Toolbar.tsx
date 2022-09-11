@@ -8,9 +8,6 @@ export default function Toolbar({ session }: { session: Session }) {
     <div className={styles.toolbar}>
       <ul>
         <li>
-          <a href="#">Profile</a>
-        </li>
-        <li>
           <a href="#" onClick={() => supabase.auth.signOut()}>
             Logout
           </a>

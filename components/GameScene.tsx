@@ -18,15 +18,20 @@ export default function GameScene({ session }: { session: Session }) {
   }, []);
 
   const handleKeypress = (e: KeyboardEvent) => {
-    let x = posX;
     if (e.key === KEY_LEFT) {
-      if (x > 0) x--;
+      moveX(-1);
     }
     if (e.key === KEY_RIGHT) {
-      if (x < 500) x++;
+      moveX(1);
     }
-    setPosX(x);
-    updateRemoteStateDebounced({ coord_x: x });
+  };
+
+  const moveX = (amount: number = 1) => {
+    let x = posX + amount;
+    if (x > 0 && x < 300) {
+      setPosX(x);
+      updateRemoteStateDebounced({ coord_x: x });
+    }
   };
 
   useEffect(() => {
@@ -84,6 +89,20 @@ export default function GameScene({ session }: { session: Session }) {
         <Toolbar session={session} />
         <div className={styles.fieldrow}>
           <p>X: {posX}</p>
+          <button
+            onClick={() => {
+              moveX(-1);
+            }}
+          >
+            -
+          </button>
+          <button
+            onClick={() => {
+              moveX(1);
+            }}
+          >
+            +
+          </button>
         </div>
       </main>
     </div>
