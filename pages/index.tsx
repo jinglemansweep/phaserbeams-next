@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../utils/supabase";
 import { Session } from "@supabase/supabase-js";
 import Auth from "../components/Auth";
-import Account from "../components/Account";
 import GameScene from "../components/GameScene";
 
 export default function Home() {
