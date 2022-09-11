@@ -15,6 +15,12 @@ This is an experiment in combining various technologies together in the effort t
   - Polls Supabase subscriptions
   - Updates LED strips using WLED [realtime UDP protocol](https://kno.wled.ge/interfaces/udp-realtime/)
 
+## Usage
+
+The experiment is currently deployed at: [https://phaserbeams-next.vercel.app/](https://phaserbeams-next.vercel.app/)
+
+Click _Login with GitHub_ and login using your GitHub identity.
+
 ## Game Concepts
 
 The games must be extremely simple as they must be rendered on a 1-dimensional LED strip.
@@ -30,12 +36,6 @@ Prototype web interface
 WLED realtime subscriber service
 
 ![WLED realtime subscriber service](./docs/images/wled-console.png)
-
-## Usage
-
-The experiment is currently deployed at: [https://phaserbeams-next.vercel.app/](https://phaserbeams-next.vercel.app/)
-
-Click _Login with GitHub_ and login using your GitHub identity.
 
 ## Development
 
