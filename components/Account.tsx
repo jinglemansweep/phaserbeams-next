@@ -1,75 +1,61 @@
 import React, { useState, useEffect } from "react";
-import { supabase } from "../utils/supabaseClient";
+import { supabase, getCurrentUser } from "../utils/supabase";
+import { Session } from "@supabase/gotrue-js";
 import styles from "../styles/Home.module.css";
 import Image from "next/image";
 
-export default function Account({ session }) {
+export default function Account({ session }: { session: Session }) {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState<string | null>(null);
-  const [website, setWebsite] = useState<string | null>(null);
-  const [avatar_url, setAvatarUrl] = useState<string | null>(null);
+  const [coordX, setCoordX] = useState<number | null>(null);
 
   useEffect(() => {
     getProfile();
   }, []);
 
-  async function getCurrentUser() {
-    const user = await supabase.auth.user();
-
-    if (!user) {
-      throw new Error("User not logged in");
-    }
-
-    return session.user;
-  }
-
   async function getProfile() {
     try {
       setLoading(true);
       const user = await getCurrentUser();
-
       let { data, error, status } = await supabase
         .from("profiles")
-        .select(`username, website, avatar_url`)
+        .select(`username, coord_x`)
         .eq("id", user.id)
         .single();
-
       if (error && status !== 406) {
         throw error;
       }
-
       if (data) {
         setUsername(data.username);
-        setWebsite(data.website);
-        setAvatarUrl(data.avatar_url);
+        setCoordX(data.coord_x);
       }
     } catch (error) {
-      alert(error.message);
+      if (error instanceof Error) {
+        alert(error.message);
+      }
     } finally {
       setLoading(false);
     }
   }
 
-  async function updateProfile({ username, website, avatar_url }) {
+  async function updateProfile({ username, coordX }: Record<string, unknown>) {
     try {
       setLoading(true);
       const user = await getCurrentUser();
-
       const updates = {
         id: user.id,
         username,
-        website,
-        avatar_url,
+        coord_x: coordX,
         updated_at: new Date(),
       };
-
       let { error } = await supabase.from("profiles").upsert(updates);
-
       if (error) {
         throw error;
       }
     } catch (error) {
-      alert(error.message);
+      if (error instanceof Error) {
+        alert(error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -81,7 +67,7 @@ export default function Account({ session }) {
         <h1 className={styles.title}>Profile</h1>
         <div className={styles.fieldrow}>
           <label htmlFor="email">Email</label>
-          <input id="email" type="text" value={session.user.email} disabled />
+          <input id="email" type="text" value={session.user?.email} disabled />
         </div>
         <div className={styles.fieldrow}>
           <label htmlFor="username">Name</label>
@@ -93,18 +79,18 @@ export default function Account({ session }) {
           />
         </div>
         <div className={styles.fieldrow}>
-          <label htmlFor="website">Website</label>
+          <label htmlFor="coordX">X Coordinate</label>
           <input
-            id="website"
-            type="website"
-            value={website || ""}
-            onChange={(e) => setWebsite(e.target.value)}
+            id="coord_x"
+            type="number"
+            value={coordX || ""}
+            onChange={(e) => setCoordX(parseInt(e.target.value))}
           />
         </div>
         <div className={styles.actionrow}>
           <button
             className="button primary block"
-            onClick={() => updateProfile({ username, website, avatar_url })}
+            onClick={() => updateProfile({ username, coordX })}
             disabled={loading}
           >
             {loading ? "Loading ..." : "Update"}
@@ -117,22 +103,6 @@ export default function Account({ session }) {
           </button>
         </div>
       </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <Image
-            src="/vercel.svg"
-            alt="Vercel Logo"
-            width="100"
-            height="20"
-            className={styles.logo}
-          />
-        </a>
-      </footer>
     </div>
   );
 }

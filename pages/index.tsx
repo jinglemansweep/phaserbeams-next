@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { supabase } from "../utils/supabaseClient";
+import { supabase } from "../utils/supabase";
 import { Session } from "@supabase/supabase-js";
 import Auth from "../components/Auth";
 import Account from "../components/Account";
+import GameScene from "../components/GameScene";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
-
   useEffect(() => {
     let mounted = true;
     async function getInitialSession() {
@@ -23,10 +23,8 @@ export default function Home() {
     const { data } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
-
     return () => {
       mounted = false;
-
       data?.unsubscribe();
     };
   }, []);
@@ -36,7 +34,7 @@ export default function Home() {
       {!session ? (
         <Auth />
       ) : (
-        <Account key={session.user?.id} session={session} />
+        <GameScene key={session.user?.id} session={session} />
       )}
     </div>
   );

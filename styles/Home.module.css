@@ -79,6 +79,22 @@
   margin-right: 0.5em;
 }
 
+.toolbar {
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+.toolbar ul {
+  margin: 0;
+  padding: 0;
+}
+
+.toolbar ul li {
+  display: inline;
+  margin: 0 0.5em 0 0.5em;
+  color: yellow;
+}
+
 .code {
   background: #fafafa;
   border-radius: 5px;
