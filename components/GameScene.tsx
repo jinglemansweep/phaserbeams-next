@@ -104,6 +104,9 @@ export default function GameScene({ session }: { session: Session }) {
             +
           </button>
         </div>
+        <div className={styles.fieldrow}>
+          <Account session={session} />
+        </div>
       </main>
     </div>
   );
